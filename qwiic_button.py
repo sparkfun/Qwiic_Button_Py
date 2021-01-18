@@ -84,6 +84,9 @@ class QwiicButton(object):
     device_name = _DEFAULT_NAME
     available_addresses = _AVAILABLE_I2C_ADDRESS
 
+    # Device ID for all Qwiic Buttons
+    DEV_ID = 0x5D
+
     # Registers
     ID = 0x00
     FIRMWARE_MINOR = 0x01
@@ -132,4 +135,91 @@ class QwiicButton(object):
             else: 
                 self._i2c = i2c_driver
 
+    # -----------------------------------------------
+    # isConnected()
+    #
+    # Is an actual board connected to our system?
+    def isConnected(self):
+        """
+            Determine if a Qwiic Button device is connected to the system.
+
+            :return: True if the device is connected, otherwise False.
+            :rtype: bool
+        """
+        return qwiic._i2c.isDeviceConnected(self.address)
     
+    # ------------------------------------------------
+    # begin()
+    #
+    # Initialize the system/validate the board.
+    def begin(self):
+        """
+            Initialize the operation of the Qwiic Button
+            Run isConnected() and check the ID in the ID register
+
+            :return: Returns true if the intialization was successful, otherwise False.
+            :rtype: bool
+        """
+        if self.isConnected() == True:
+            id = self._i2c.readByte(self.address, self.ID)
+            
+            if id == self.DEV_ID:
+                return True
+        
+        return False
+    
+    # ------------------------------------------------
+    # getFirmwareVersion()
+    #
+    # Returns the firmware version of the attached devie as a 16-bit integer.
+    # The leftmost (high) byte is the major revision number, 
+    # and the rightmost (low) byte is the minor revision number.
+    def getFirmwareVersion(self):
+        """
+            Read the register and get the major and minor firmware version number.
+
+            :return: 16 bytes version number
+            :rtype: int
+        """
+        version = self._i2c.readByte(self.address, self.FIRMWARE_MAJOR) << 8
+        version |= self._i2c.readByte(self.address, self.FIRMWARE_MINOR)
+        return version
+
+    # -------------------------------------------------
+    # setI2Caddress(address)
+    #
+    # Configures the attached device to attach to the I2C bus using the specified address
+    def setI2Caddress(self, newAddress):
+        """
+            Change the I2C address of the Qwiic Button
+
+            :return: True if the change was successful, false otherwise.
+            :rtype: bool
+        """
+        # First, check if the specified address is valid
+        if newAddress < 0x08 or newAddress > 0x77:
+            return False
+        
+        # Write new address to the I2C address register of the Qwiic Button
+        success = self._i2c.writeByte(self.address, self.I2C_ADDRESS, newAddress)
+
+        # Check if the write was successful
+        if success == True:
+            self.address = newAddress
+            return True
+        
+        else:
+            return False
+    
+    # ---------------------------------------------------
+    # getI2Caddress()
+    #
+    # Returns the I2C address of the device
+    def getI2Caddress(sel):
+        """
+            Returns the current I2C address of the Qwiic Button
+
+            :return: current I2C address
+            :rtype: int
+        """
+        return self.address
