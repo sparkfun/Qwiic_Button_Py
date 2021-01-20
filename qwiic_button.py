@@ -117,7 +117,7 @@ class QwiicButton(object):
 
     # Queue Status Flags
     popRequest = 0
-    isExmpty = 0
+    isEmpty = 0
     isFull = 0
 
     # Constructor
@@ -444,4 +444,100 @@ class QwiicButton(object):
         self.isPressed = 0
         # Clear the BUTTON_STATUS register by writing a 0
         self._i2c.writeByte(self.address, self.BUTTON_STATUS, 0x00)
-        
+    
+    # -------------------------------------------------------
+    # isPressedQueueFull()
+    #
+    # Returns true if queue of button press timestamps is full,
+    # and false otherwise.
+    def isPressedQueueFull(self):
+        """
+            Returns the isFull bit of the PRESSED_QUEUE_STATUS register
+
+            :return: isFull
+            :rtype: bool
+        """
+        # First, read the PRESSED_QUEUE_STATUS register
+        pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
+        # Convert to binary and clear all bits but isFull
+        self.isFull = bin(pressedQueueStat) & ~(0xFE)
+        # Return isFull as a bool
+        return bool(self.isFull)
+    
+    # -------------------------------------------------------
+    # isPressedQueueEmpty()
+    #
+    # Returns true if the queue of button press timestamps is
+    # empty, and false otherwise.
+    def isPressedQueueEmpty(self):
+        """
+            Returns the isEmpty bit of the PRESSED_QUEUE_STATUS register
+            
+            :return: isEmpty
+            :rtype: bool
+        """
+        # First, read the PRESSED_QUEUE_STATUS register
+        pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
+        # Convert to binary and clear all bits but isEmpty
+        self.isEmpty = bin(pressedQueueStat) & ~(0xFD)
+        # Shift isEmpty to the zero bit
+        self.isEmpty = self.isEmpty >> 1
+        # Return isEmpty as a bool
+        return bool(self.isEmpty)
+
+    # ------------------------------------------------------
+    # timeSinceLastPress()
+    #
+    # Returns how many milliseconds it has been since the last
+    # button press. Since this returns a 32-bit int, it will 
+    # roll over about every 50 days.
+    def timeSinceLastPress(self):
+        """
+            Returns the four bytes of PRESSED_QUEUE_FRONT.
+            Time in milliseconds.
+
+            :return: PRESSED_QUEUE_FRONT
+            :rtype: int
+        """
+        # TODO: not sure if this will work because this read might return a list?
+        return self._i2c.readBlock(self.address, self.PRESSED_QUEUE_FRONT, 4)
+
+    # -------------------------------------------------------
+    # timeSinceFirstPress()
+    #
+    # Returns how many milliseconds it has been since the first 
+    # button press. Since this returns a 32-bit int, it will 
+    # roll over about every 50 days.
+    def timeSinceFirstPress(self):
+        """
+            Returns the four bytes of PRESSED_QUEUE_BACK.
+            Time in milliseconds
+
+            :return: PRESSED_QUEUE_BACK
+            :rtype: int
+        """
+        return self._i2c.readBlock(self.address, self.PRESSED_QUEUE_BACK, 4)
+
+    # -------------------------------------------------------
+    # popPressedQueue()
+    #
+    # Returns the oldest value in the queue (milliseconds since 
+    # first button press), and then removes it.
+    def popPressedQueue(self):
+        """
+            Returns contents of PRESSED_QUEUE_BACK register and 
+            writes a 1 to popRequest bit of PRESSED_QUEUE_STATUS
+            register.
+
+            :return: PRESSED_QUEUE_BACK
+            :rtype: int
+        """
+        # Get the time in milliseconds since the button was first pressed
+        tempData = self.timeSinceFirstPress()
+        # Read PRESSED_QUEUE_STATUS register
+        pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
+        self.popRequest = 1
+        # Set popRequest bit to 1
+        pressedQueueStat = pressedQueueStat | (self.popRequest << 2)
+        self._i2c.writeByte(self.address, self.PRESSED_QUEUE_STATUS, pressedQueueStat)
+        return tempData
