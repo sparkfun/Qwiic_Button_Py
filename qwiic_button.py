@@ -223,3 +223,81 @@ class QwiicButton(object):
             :rtype: int
         """
         return self.address
+
+    # ---------------------------------------------------
+    # isPressed()
+    #
+    # Returns 1 if the button/switch is pressed, 0 otherwise
+    def isPressed(self):
+        """
+            Returns the value of the isPressed status bit of the BUTTON_STATUS register
+
+            :return: isPressed bit
+            :rtype: bool
+        """
+        # Read the button status register
+        button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # Convert to binary and clear all bits but isPressed
+        self.isPressed = bin(button_status) & ~(0xFB)
+        # Shift isPressed to the zero bit
+        self.isPressed = self.isPressed >> 2
+        # Return isPressed as a bool
+        return bool(self.isPressed)
+    
+    # ----------------------------------------------------
+    # hasBeenClicked()
+    #
+    # Returns 1 if the button/switch is clicked, and 0 otherwise
+    def hasBeenClicked(self):
+        """
+            Returns the value of the hasBeenClicked status bit of the BUTTON_STATUS register
+
+            :return: hasBeenClicked bit
+            :rtype: bool
+        """
+        # Read the button status register
+        button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # Convert to binary and clear all bits but hasBeenClicked
+        self.hasBeenClicked = bin(button_status) & ~(0xFD)
+        # Shift hasBeenClicekd to the zero bit
+        self.hasBeenClicked = self.hasBeenClicked >> 1
+        # Return hasBeenClicked as a bool
+        return bool(self.hasBeenClicked)
+    
+    # ------------------------------------------------------
+    # getDebounceTime()
+    #
+    # Returns the time that the button waits for the mechanical
+    # contacts to settle in milliseconds.
+    def getDebounceTime(self):
+        """
+            Returns the value in the BUTTON_DEBOUNCE_TIME register
+
+            :return: debounce time in milliseconds
+            :rtype: int
+        """
+        # TODO: just so you know, this will return a list. You need to find out how to concatenate the two items into one time silly
+        return self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
+    
+    # -------------------------------------------------------
+    # setDebounceTime(time)
+    #
+    # Sets the time that the button waits for the mechanical 
+    # contacts to settle in milliseconds.
+    def setDebouncetime(self, time):
+        """
+            Write two bytes into the BUTTON_DEBOUNCE_TIME register
+
+            :return: Nothing
+            :rtype: void
+        """
+        # First check that time is not too big
+        if time > 0xFFFF:
+            time = 0xFFFF
+        # Then write two bytes
+        self._i2c.writeWord(self.address, self.BUTTON_DEBOUNCE_TIME, time)
+
+    # -------------------------------------------------------
+    # enablePressedInterrupt()
+    #
+    #
