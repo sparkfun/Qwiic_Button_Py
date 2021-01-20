@@ -236,9 +236,9 @@ class QwiicButton(object):
             :rtype: bool
         """
         # Read the button status register
-        button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
         # Convert to binary and clear all bits but isPressed
-        self.isPressed = bin(button_status) & ~(0xFB)
+        self.isPressed = bin(buttonStatus) & ~(0xFB)
         # Shift isPressed to the zero bit
         self.isPressed = self.isPressed >> 2
         # Return isPressed as a bool
@@ -256,10 +256,10 @@ class QwiicButton(object):
             :rtype: bool
         """
         # Read the button status register
-        button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
         # Convert to binary and clear all bits but hasBeenClicked
-        self.hasBeenClicked = bin(button_status) & ~(0xFD)
-        # Shift hasBeenClicekd to the zero bit
+        self.hasBeenClicked = bin(buttonStatus) & ~(0xFD)
+        # Shift hasBeenClicked to the zero bit
         self.hasBeenClicked = self.hasBeenClicked >> 1
         # Return hasBeenClicked as a bool
         return bool(self.hasBeenClicked)
@@ -300,4 +300,148 @@ class QwiicButton(object):
     # -------------------------------------------------------
     # enablePressedInterrupt()
     #
+    # The interrupt will be configured to trigger when the button
+    # is pressed. If enableClickedInterrupt() has also been called,
+    # then the interrupt will trigger on either a push or a click.
+    def enablePressedInterrupt(self):
+        """
+            Set pressedEnable bit of the INTERRUPT_CONFIG register to a 1
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # First, read the INTERRUPT_CONFIG register
+        interruptConfig = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
+        self.pressedEnable = 1
+        # Set the pressedEnable bit
+        interruptConfig = interruptConfig | (self.pressedEnable << 1)
+        # Write the new interrupt configure byte
+        self._i2c.writeByte(self.address, self.INTERRUPT_CONFIG, interruptConfig)
+    
+    # -------------------------------------------------------
+    # disablePressedInterrupt()
+    # 
+    # Interrupt will no longer be configured to trigger when the
+    # button is pressed. If enableClickedInterrupt() has also been called, 
+    # then the interrupt will still trigger on the button click.
+    def disablePressedInterrupt(self):
+        """
+            Clear the pressedEnable bit of the INTERRUPT_CONFIG register
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # First, read the INTERRUPT_CONFIG register
+        interruptConfig = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
+        self.pressedEnable = 0
+        # Clear the pressedEnable bit
+        interruptConfig = interruptConfig & ~(1 << 1)
+        # Write the new interrupt configure byte
+        self._i2c.writeByte(self.address, self.INTERRUPT_CONFIG, interruptConfig)
+
+    # -------------------------------------------------------
+    # enableClickedInterrupt()
     #
+    # The interrupt will be configured to trigger when the button
+    # is clicked. If enablePressedInterrupt() has also been called, 
+    # then the interrupt will trigger on either a push or a click.
+    def enableClickedInterrupt(self):
+        """
+            Set the clickedEnable bit of the INTERRUPT_CONFIG register
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # First, read the INTERRUPT_CONFIG register
+        interruptConfig = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
+        self.clickedEnable = 1
+        # Set the clickedEnable bit
+        interruptConfig = interruptConfig | self.clickedEnable
+        # Write the new interrupt configure byte
+        self._i2c.writeByte(self.address, self.INTERRUPT_CONFIG, interruptConfig)
+
+    # -------------------------------------------------------
+    # disableClickedInterrupt()
+    #
+    # The interrupt will no longer be configured to trigger when
+    # the button is clicked. If enablePressedInterrupt() has also
+    # been called, then the interrupt will still trigger on the 
+    # button press.
+    def disableClickedInterrupt(self):
+        """
+            Clear the clickedEnable bit of the INTERRUPT_CONFIG register
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # First, read the INTERRUPT_CONFIG register
+        interruptConfig = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
+        self.clickedEnable = 0
+        # Clear the clickedEnable bit
+        interruptConfig = interruptConfig & (self.clickedEnable)
+        # Write the new interrupt configure byte
+        self._i2c.writeByte(self.address, self.INTERRUPT_CONFIG, interruptConfig)
+    
+    # -------------------------------------------------------
+    # available()
+    #
+    # Returns the eventAvailble bit. This bit is set to 1 if a
+    # button click or press event occurred.
+    def available(self):
+        """
+            Return the eventAvailable bit of the BUTTON_STATUS register
+            
+            :return: eventAvailable bit
+            :rtye: bool
+        """
+        # First, read BUTTON_STATUS register
+        buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # Convert to binary and clear all bits but the eventAvailable bit
+        self.eventAvailable = bin(buttonStatus) & ~(0xFE)
+        # Return eventAvailable bit as a bool
+        return bool(self.eventAvailable)
+    
+    # -------------------------------------------------------
+    # clearEventBits()
+    # 
+    # Sets all button status bits (isPressed, hasBeenClicked, 
+    # and eventAvailable) to zero.
+    def clearEventBits(self):
+        """
+            Clear the isPressed, hasBeenClicked, and eventAvailable
+            bits of the BUTTON_STATUS register
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # First, read BUTTON_STATUS register
+        buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # Convert to binary and clear the last three bits
+        buttonStatus = bin(buttonStatus) & ~(0x7)
+        # Write to BUTTON_STATUS register
+        self._i2c.writeByte(self.address, BUTTON_STATUS, buttonStatus)
+    
+    # -------------------------------------------------------
+    # resetInterruptConfig()
+    #
+    # Resets the interrupt configuration back to defaults.
+    def resetInterruptConfig(self):
+        """
+            Enable pressed and clicked interrupts and clear the
+            eventAvailable bit of BUTTON_STATUS register
+
+            :return: Nothing
+            :rtype: Void
+        """
+        self.pressedEnable = 1
+        self.clickedEnable = 1
+        # write 0b11 to the INTERRUPT_CONFIG register
+        self._i2c.writeByte(self.address, self.INTERRUPT_CONFIG, 0b11)
+        self.eventAvailable = 0
+        # Clear hasBeenClicked, isPressed too
+        # TODO: not sure if this is right
+        self.hasBeenClicked = 0
+        self.isPressed = 0
+        # Clear the BUTTON_STATUS register by writing a 0
+        self._i2c.writeByte(self.address, self.BUTTON_STATUS, 0x00)
+        
