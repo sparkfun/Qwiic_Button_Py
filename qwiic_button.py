@@ -642,3 +642,56 @@ class QwiicButton(object):
         clickedQueueStat = clickedQueueStat | (self.clickedPopRequest << 2)
         self._i2c.writeByte(self.address, self.CLICKED_QUEUE_STATUS, clickedQueueStat)
         return tempData
+
+    # -------------------------------------------------------------
+    # LEDconfig(brightness, cycleTime, offTime, granularity)
+    #
+    # Configures the LED with the given max brightness, granularity
+    # (1 is fine for most applications), cycle time, and off time.
+    def LEDconfig(self, brightness, cycleTime, offTime, granularity = 1):
+        """
+            Write brightness, cycleTime, offTime, and granularity
+            parameters to their respective registers: LED_BRIGHTNESS,
+            LED_PULSE_CYCLE_TIME, LED_PULSE_OFF_TIME, LED_PULSE_GRANULARITY
+
+            :return: Nothing
+            :rtype: Void
+        """
+        # Write brightness
+        self._i2c.writeByte(self.address, self.LED_BRIGHTNESS, brightness)
+        # Write cycleTime
+        self._i2c.writeByte(self.address, self.LED_PULSE_CYCLE_TIME, cycleTime)
+        # Write offTime
+        self._i2c.writeByte(self.address, self.LED_PULSE_OFF_TIME, offTime)
+        # Write granularity
+        self._i2c.writeByte(self.address, self.LED_PULSE_GRANULARITY, granularity)
+    
+    # --------------------------------------------------------------
+    # LEDoff()
+    #
+    # Turn the onboard LED off
+    def LEDoff(self):
+        """
+            Write zero's to all the LED registers: LED_BRIGHTNESS,
+            LED_PULSE_CYCLE_TIME, LED_PULSE_OFF_TIME, and LED_PULSE_GRANULARITY
+            defaults to zero.
+
+            :return: Nothing
+            :rtype: void
+        """
+        self.LEDconfig(0, 0, 0)
+    
+    # --------------------------------------------------------------
+    # LEDon(brightness)
+    #
+    # Turns the onboard LED on with specified brightness. Set brightness
+    # to an integer between 0 and 255, where 0 is off and 255 is max
+    # brightness.
+    def LEDon(self, brightness):
+        """
+            Set LED on without pulse
+
+            :return: Nothing
+            :rtype: Void
+        """
+        self.LEDconfig(brightness, 0, 0)
