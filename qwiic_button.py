@@ -115,10 +115,15 @@ class QwiicButton(object):
     clickedEnable = 0
     pressedEnable = 0
 
-    # Queue Status Flags
-    popRequest = 0
-    isEmpty = 0
-    isFull = 0
+    # Pressed Queue Status Flags
+    pressedPopRequest = 0
+    pressedIsEmpty = 0
+    pressedIsFull = 0
+
+    # Clicked Queue Status Flags
+    clickedPopRequest = 0
+    clickedIsEmpty = 0
+    clickedIsFull = 0
 
     # Constructor
     def __init__(self, address=None, i2c_driver=None):
@@ -454,15 +459,15 @@ class QwiicButton(object):
         """
             Returns the isFull bit of the PRESSED_QUEUE_STATUS register
 
-            :return: isFull
+            :return: pressedIsFull
             :rtype: bool
         """
         # First, read the PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isFull
-        self.isFull = bin(pressedQueueStat) & ~(0xFE)
-        # Return isFull as a bool
-        return bool(self.isFull)
+        self.pressedIsFull = bin(pressedQueueStat) & ~(0xFE)
+        # Return pressedIsFull as a bool
+        return bool(self.pressedIsFull)
     
     # -------------------------------------------------------
     # isPressedQueueEmpty()
@@ -473,17 +478,17 @@ class QwiicButton(object):
         """
             Returns the isEmpty bit of the PRESSED_QUEUE_STATUS register
             
-            :return: isEmpty
+            :return: pressedIsEmpty
             :rtype: bool
         """
         # First, read the PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isEmpty
-        self.isEmpty = bin(pressedQueueStat) & ~(0xFD)
-        # Shift isEmpty to the zero bit
-        self.isEmpty = self.isEmpty >> 1
-        # Return isEmpty as a bool
-        return bool(self.isEmpty)
+        self.pressedIsEmpty = bin(pressedQueueStat) & ~(0xFD)
+        # Shift pressedIsEmpty to the zero bit
+        self.pressedIsEmpty = self.pressedIsEmpty >> 1
+        # Return pressedIsEmpty as a bool
+        return bool(self.pressedIsEmpty)
 
     # ------------------------------------------------------
     # timeSinceLastPress()
@@ -536,8 +541,104 @@ class QwiicButton(object):
         tempData = self.timeSinceFirstPress()
         # Read PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
-        self.popRequest = 1
+        self.pressedPopRequest = 1
         # Set popRequest bit to 1
-        pressedQueueStat = pressedQueueStat | (self.popRequest << 2)
+        pressedQueueStat = pressedQueueStat | (self.pressedPopRequest << 2)
         self._i2c.writeByte(self.address, self.PRESSED_QUEUE_STATUS, pressedQueueStat)
+        return tempData
+    
+    # ---------------------------------------------------------
+    # isClickedQueueFull()
+    #
+    # Returns true if the queue of button click timestamps is full
+    # and false otherwise.
+    def isClickedQueueFull(self):
+        """
+            Reads the isFull bit of the CLICKED_QUEUE_STATUS register
+
+            :return: clickedIsFull
+            :rtype: bool
+        """
+        # First, read the CLICKED_QUEUE_STATUS register
+        clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
+        # Convert to binary and clear all bits but clickedIsFull
+        self.clickedIsFull = bin(clickedQueueStat) & ~(0xFE)
+        # Return clickedIsFull as a bool
+        return bool(self.clickedIsFull)
+    
+    # ----------------------------------------------------------
+    # isClickedQueueEmpty()
+    #
+    # Returns true if the queue click timestamps is empty and false
+    # otherwise.
+    def isClickedQueueEmpty(self):
+        """
+            Reads the isEmpty bit of the CLICKED_QUEUE_STATUS register
+
+            :return: clickedIsEmpty
+            :rtype: bool
+        """
+        # First, read the CLICKED_QUEUE_STATUS register
+        clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
+        # Convert to binary and clear all bits but clickedIsEmpty
+        self.clickedIsEmpty = bin(clickedQueueStat) & ~(0xFD)
+        # Shift clickedIsEmpty to the zero bit
+        self.clickedIsEmpty = self.clickedIsEmpty >> 1
+        # Return clickedIsEmpty as a bool
+        return bool(self.clickedIsEmpty)
+
+    # ------------------------------------------------------------
+    # timeSinceLastClick()
+    #
+    # Returns how many milliseconds it has been since the last button
+    # click. Since this returns a 32-bit int, it will roll over about
+    # every 50 days
+    def timeSinceLastClick(self):
+        """
+            Returns the four bytes of CLICKED_QUEUE_FRONT register.
+            Time in milliseconds
+
+            :return: CLICKED_QUEUE_FRONT
+            :rtype: int
+        """
+        return self._i2c.readBlock(self.address, self.CLICKED_QUEUE_FRONT, 4)
+
+    # ------------------------------------------------------------
+    # timeSinceFirstClick()
+    #
+    # Returns how many milliseconds it has been since the first button
+    # click. Since this returns a 32-bit int, it will roll over about 
+    # every 50 days
+    def timeSinceFirstClick(self):
+        """
+            Returns the four bytes of CLICKED_QUEUE_BACK register.
+            Time in milliseconds
+
+            :return: CLICKED_QUEUE_BACK
+            :rtype: int
+        """
+        return self._i2c.readBlock(self.address, self.CLICKED_QUEUE_BACK, 4)
+
+    # -------------------------------------------------------------
+    # popClickedQueue()
+    #
+    # Returns the oldest value in the queue (milliseconds since first
+    # button click), and then removes it.
+    def popClickedQueue(self):
+        """
+            Returns contents of CLICKED_QUEUE_BACK register and 
+            writes a 1 to popRequest bit of CLICKED_QUEUE_STATUS
+            register.
+
+            :return: CLICKED_QUEUE_BACK
+            :rtype: int
+        """
+        # Get the time in milliseconds since the button was first clicked
+        tempData = self.timeSinceFirstClick()
+        # Read CLICKED_QUEUE_STATUS register
+        clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
+        self.clickedPopRequest = 1
+        # Set popRequest bit to 1
+        clickedQueueStat = clickedQueueStat | (self.clickedPopRequest << 2)
+        self._i2c.writeByte(self.address, self.CLICKED_QUEUE_STATUS, clickedQueueStat)
         return tempData
