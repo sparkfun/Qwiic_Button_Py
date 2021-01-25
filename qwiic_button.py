@@ -137,8 +137,8 @@ class QwiicButton(object):
             if self._i2c == None:
                 print("Unable to load I2C driver for this platform.")
                 return
-            else: 
-                self._i2c = i2c_driver
+        else: 
+            self._i2c = i2c_driver
 
     # -----------------------------------------------
     # isConnected()
@@ -151,7 +151,7 @@ class QwiicButton(object):
             :return: True if the device is connected, otherwise False.
             :rtype: bool
         """
-        return qwiic._i2c.isDeviceConnected(self.address)
+        return qwiic_i2c.isDeviceConnected(self.address)
     
     # ------------------------------------------------
     # begin()
@@ -233,7 +233,7 @@ class QwiicButton(object):
     # isPressed()
     #
     # Returns 1 if the button/switch is pressed, 0 otherwise
-    def isPressed(self):
+    def isButtonPressed(self):
         """
             Returns the value of the isPressed status bit of the BUTTON_STATUS register
 
@@ -242,8 +242,10 @@ class QwiicButton(object):
         """
         # Read the button status register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # FOR TESTING
+        #print(buttonStatus)
         # Convert to binary and clear all bits but isPressed
-        self.isPressed = bin(buttonStatus) & ~(0xFB)
+        self.isPressed = int(buttonStatus) & ~(0xFB)
         # Shift isPressed to the zero bit
         self.isPressed = self.isPressed >> 2
         # Return isPressed as a bool
@@ -282,14 +284,15 @@ class QwiicButton(object):
             :rtype: int
         """
         # TODO: just so you know, this will return a list. You need to find out how to concatenate the two items into one time silly
-        return self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
-    
+        timeList = self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
+        return timeList
+        
     # -------------------------------------------------------
     # setDebounceTime(time)
     #
     # Sets the time that the button waits for the mechanical 
     # contacts to settle in milliseconds.
-    def setDebouncetime(self, time):
+    def setDebounceTime(self, time):
         """
             Write two bytes into the BUTTON_DEBOUNCE_TIME register
 
@@ -484,7 +487,7 @@ class QwiicButton(object):
         # First, read the PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isEmpty
-        self.pressedIsEmpty = bin(pressedQueueStat) & ~(0xFD)
+        self.pressedIsEmpty = int(pressedQueueStat) & ~(0xFD)
         # Shift pressedIsEmpty to the zero bit
         self.pressedIsEmpty = self.pressedIsEmpty >> 1
         # Return pressedIsEmpty as a bool
@@ -581,7 +584,7 @@ class QwiicButton(object):
         # First, read the CLICKED_QUEUE_STATUS register
         clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
         # Convert to binary and clear all bits but clickedIsEmpty
-        self.clickedIsEmpty = bin(clickedQueueStat) & ~(0xFD)
+        self.clickedIsEmpty = int(clickedQueueStat) & ~(0xFD)
         # Shift clickedIsEmpty to the zero bit
         self.clickedIsEmpty = self.clickedIsEmpty >> 1
         # Return clickedIsEmpty as a bool

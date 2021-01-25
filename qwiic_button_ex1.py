@@ -49,22 +49,23 @@ def runExample():
     print("\nSparkFun Qwiic Button Example 1")
     myButton = qwiic_button.QwiicButton()
 
-    if myButton.isConnected() == False:
+    if myButton.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
+    print("\nButton ready!")
+    
+    myButton.setDebounceTime(23)
+    print(myButton.getDebounceTime())
+    
+    while False:
 
-    myButton.begin()
-
-    while 1:
-        if myButton.isPressed() == True:
+        if myButton.isButtonPressed() == True:
             print("\nThe button is pressed!")
 
-            while myButton.isPressed() == True:
-                wait(10)
-            
-            print("\nTHe button is not pressed!")
-        wait(20)
+        else:    
+            print("\nThe button is not pressed!")
+        time.sleep(0.02)
 
 if __name__ == '__main__':
     try:
