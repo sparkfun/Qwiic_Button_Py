@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# qwiic_button_ex3.py
+# qwiic_button_ex5.py
 #
-# Simple Example for the Qwiic Button. Checks whether the button is pressed and
-# and the LED pulses if it is.
+# Simple Example for the Qwiic Button. Shows how to change the I2C address of
+# the Qwiic Button
 #------------------------------------------------------------------------
 #
 # Written by Priynka Makin @ SparkFun Electronics, January 2021
@@ -37,19 +37,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 # SOFTWARE.
 #==================================================================================
-# Example 3
+# Example 5
 
 from __future__ import print_function
 import qwiic_button
 import time
 import sys
 
-brightness = 250    # The maximum brightness of the pulsing LED. Can be between 0 and 255
-cycleTime = 1000    # The total time for the pulse to take. Set to a bigger number for a slower pulse or a smaller number for a faster pulse
-offTime = 200       # The total time to stay off between pulses. Set to 0 to be pulsing continuously.
 def runExample():
 
-    print("\nSparkFun Qwiic Button Example 3")
+    print("\nSparkFun Qwiic Button Example 5")
     myButton = qwiic_button.QwiicButton()
 
     if myButton.isConnected() == False:
@@ -58,28 +55,50 @@ def runExample():
         return
     
     myButton.begin()
+    print("\nReady!")
 
-    myButton.LEDoff()
+    print("\nEnter a new I2C address for the Qwiic Button to use.")
+    print("\nDon't use the 0x prefix. For instance, if you wanted to")
+    print("\nchange the address to 0x5B, you would type 5B and hit enter.")
 
-    while 1:
+    newAddress = input("\nNew Address: ")
+    int(newAddress, 16)
+
+    # Check if the user entered a valid address
+    if newAddress > 0x08 and newAddress < 0x77:
+        print("\nCharacters received and new address valid!")
+        print("\nAttempting to set Qwiic Button address...")
+
+        if myButton.changeAddress(newAddress) == True:
+            print("\nAddress successfully changed!")
+            # Check that the Qwiic Button acknowledges on the new address
+            if myButton.isConnected() == False:
+                print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
+                    file=sys.stderr)
+            
+            else:
+                print("\nAddress change was not successful")
+            
+        else:
+            print("\nAddress entered not a valid I2C address")
         
-        if myButton.isPressed() == True:
+        # I2C scanner 
+        addressesOnBus = qwiic_i2c.scan()
+        while 1:
 
-            print("\nThe button is pressed!")
-            myButton.LEDconfig(brightness, cycleTime, offTime)
-
-            while myButton.isPressed() == True:
-
-                wait(10)
-
-            print("\nThe button is not pressed.")
-            myButton.LEDoff()
-        
-        wait(20)    # Let's not hammer too hard on the I2C bus
+            if not addressesOnBus:
+                print("\nNo devices found on I2C bus.")
+            
+            else:
+                for i in range(0, len(addressesOnBus)):
+                    print("\nI2C device found at address: 0x" + hex(addressesOnBus[i]))
+                
+            # Delay for 5 seconds
+            time.sleep(5)
 
 if __name__ == '__main__':
     try:
         runExample()
     except (KeyboardInterrupt, SystemExit) as exErr:
-        print("\nEnding Example 3")
+        print("\nEnding Example 5")
         sys.exit(0)

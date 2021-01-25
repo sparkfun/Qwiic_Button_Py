@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# qwiic_button_ex3.py
+# qwiic_button_ex4.py
 #
-# Simple Example for the Qwiic Button. Checks whether the button is pressed and
-# and the LED pulses if it is.
+# Simple Example for the Qwiic Button. Shows how to use he FIFO Queue on the Qwiic Button.
 #------------------------------------------------------------------------
 #
 # Written by Priynka Makin @ SparkFun Electronics, January 2021
@@ -37,19 +36,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 # SOFTWARE.
 #==================================================================================
-# Example 3
+# Example 4
 
 from __future__ import print_function
 import qwiic_button
 import time
 import sys
 
-brightness = 250    # The maximum brightness of the pulsing LED. Can be between 0 and 255
-cycleTime = 1000    # The total time for the pulse to take. Set to a bigger number for a slower pulse or a smaller number for a faster pulse
-offTime = 200       # The total time to stay off between pulses. Set to 0 to be pulsing continuously.
 def runExample():
 
-    print("\nSparkFun Qwiic Button Example 3")
+    print("\nSparkFun Qwiic Button Example 4")
     myButton = qwiic_button.QwiicButton()
 
     if myButton.isConnected() == False:
@@ -59,27 +55,47 @@ def runExample():
     
     myButton.begin()
 
-    myButton.LEDoff()
-
     while 1:
+
+        # If the queue of pressed events is not empty
+        if myButton.isPressedQueueEmpty() == False:
+            # Then print the time since the last and first button press
+            print("\n" + myButton.timeSinceLastPress() / 1000.0)
+            print("s since he button was last pressed   ")
+            print(myButton.timeSinceFistPress() / 1000.0)
+            print("s since the button was first pressed ")
+        # If the queue is empty
+        else: 
+            print("ButtonPressed Queue is empty! ")
+
+        # If the queue of clicked events is not empty
+        if myButton.isClickedQueueEmpty() == False:
+            # Then print the time since the last and first button click
+            print(myButton.timeSinceLastClick() / 1000.0)
+            print("s since the button was last clicked  ")
+            print(myButton.timeSinceFistClick() / 1000.0)
+            print("s since the button was first clicked")
+        # If the queue is empty
+        else:
+            print(" ButtonClicked Queue is empty!")
         
-        if myButton.isPressed() == True:
+        print("\n")
 
-            print("\nThe button is pressed!")
-            myButton.LEDconfig(brightness, cycleTime, offTime)
+        val = input()
+        # If the character is c or C, then pop a value off of the clicked queue
+        if char(val) == 'c' or char(val) == 'C':
+            myButton.popClickedQueue()
+            print("\nPopped ClickedQueue!")
+        # If the character is p or P, then pop a value off of the pressed queue
+        if char(val) == 'p' or char(val) == 'P':
+            myButton.popPressedQueue()
+            print("\nPopped PressedQueue!")
 
-            while myButton.isPressed() == True:
-
-                wait(10)
-
-            print("\nThe button is not pressed.")
-            myButton.LEDoff()
-        
         wait(20)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
         runExample()
     except (KeyboardInterrupt, SystemExit) as exErr:
-        print("\nEnding Example 3")
+        print("\nEnding Example 4")
         sys.exit(0)
