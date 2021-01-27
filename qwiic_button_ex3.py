@@ -52,30 +52,27 @@ def runExample():
     print("\nSparkFun Qwiic Button Example 3")
     myButton = qwiic_button.QwiicButton()
 
-    if myButton.isConnected() == False:
+    if myButton.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
     
-    myButton.begin()
+    print("\nButton ready!")
 
     myButton.LEDoff()
 
-    while 1:
+    while True:
         
-        if myButton.isPressed() == True:
+        if myButton.isButtonPressed() == True:
 
             print("\nThe button is pressed!")
             myButton.LEDconfig(brightness, cycleTime, offTime)
-
-            while myButton.isPressed() == True:
-
-                wait(10)
-
+        
+        else:
             print("\nThe button is not pressed.")
             myButton.LEDoff()
         
-        wait(20)    # Let's not hammer too hard on the I2C bus
+        time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:

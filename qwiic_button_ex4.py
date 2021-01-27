@@ -48,50 +48,46 @@ def runExample():
     print("\nSparkFun Qwiic Button Example 4")
     myButton = qwiic_button.QwiicButton()
 
-    if myButton.isConnected() == False:
+    if myButton.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
     
-    myButton.begin()
+    print("\nButton ready!")
 
-    while 1:
-
+    while True:
+        
         # If the queue of pressed events is not empty
         if myButton.isPressedQueueEmpty() == False:
             # Then print the time since the last and first button press
-            print("\n" + myButton.timeSinceLastPress() / 1000.0)
-            print("s since he button was last pressed   ")
-            print(myButton.timeSinceFistPress() / 1000.0)
-            print("s since the button was first pressed ")
+            print("\n" + str(myButton.timeSinceLastPress() / 1000.0) + "s since he button was last pressed   ")
+            print(str(myButton.timeSinceFirstPress() / 1000.0) +"s since the button was first pressed ")
         # If the queue is empty
         else: 
-            print("ButtonPressed Queue is empty! ")
+            print("\nButtonPressed Queue is empty! ")
 
         # If the queue of clicked events is not empty
         if myButton.isClickedQueueEmpty() == False:
             # Then print the time since the last and first button click
-            print(myButton.timeSinceLastClick() / 1000.0)
-            print("s since the button was last clicked  ")
-            print(myButton.timeSinceFistClick() / 1000.0)
-            print("s since the button was first clicked")
+            print("\n" + str(myButton.timeSinceLastClick() / 1000.0) + "s since the button was last clicked  ")
+            print(str(myButton.timeSinceFirstClick() / 1000.0) + "s since the button was first clicked")
         # If the queue is empty
         else:
-            print(" ButtonClicked Queue is empty!")
+            print("\nButtonClicked Queue is empty!")
         
-        print("\n")
+        # print("\n")
 
-        val = input()
-        # If the character is c or C, then pop a value off of the clicked queue
-        if char(val) == 'c' or char(val) == 'C':
-            myButton.popClickedQueue()
-            print("\nPopped ClickedQueue!")
-        # If the character is p or P, then pop a value off of the pressed queue
-        if char(val) == 'p' or char(val) == 'P':
-            myButton.popPressedQueue()
-            print("\nPopped PressedQueue!")
+        # val = input()
+        # # If the character is c or C, then pop a value off of the clicked queue
+        # if char(val) == 'c' or char(val) == 'C':
+            # myButton.popClickedQueue()
+            # print("\nPopped ClickedQueue!")
+        # # If the character is p or P, then pop a value off of the pressed queue
+        # if char(val) == 'p' or char(val) == 'P':
+            # myButton.popPressedQueue()
+            # print("\nPopped PressedQueue!")
 
-        wait(20)    # Let's not hammer too hard on the I2C bus
+        time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:

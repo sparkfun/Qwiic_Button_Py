@@ -137,8 +137,8 @@ class QwiicButton(object):
             if self._i2c == None:
                 print("Unable to load I2C driver for this platform.")
                 return
-            else: 
-                self._i2c = i2c_driver
+        else: 
+            self._i2c = i2c_driver
 
     # -----------------------------------------------
     # isConnected()
@@ -151,7 +151,7 @@ class QwiicButton(object):
             :return: True if the device is connected, otherwise False.
             :rtype: bool
         """
-        return qwiic._i2c.isDeviceConnected(self.address)
+        return qwiic_i2c.isDeviceConnected(self.address)
     
     # ------------------------------------------------
     # begin()
@@ -220,7 +220,7 @@ class QwiicButton(object):
     # getI2Caddress()
     #
     # Returns the I2C address of the device
-    def getI2Caddress(sel):
+    def getI2Caddress(self):
         """
             Returns the current I2C address of the Qwiic Button
 
@@ -233,7 +233,7 @@ class QwiicButton(object):
     # isPressed()
     #
     # Returns 1 if the button/switch is pressed, 0 otherwise
-    def isPressed(self):
+    def isButtonPressed(self):
         """
             Returns the value of the isPressed status bit of the BUTTON_STATUS register
 
@@ -242,8 +242,10 @@ class QwiicButton(object):
         """
         # Read the button status register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
+        # FOR TESTING
+        #print(buttonStatus)
         # Convert to binary and clear all bits but isPressed
-        self.isPressed = bin(buttonStatus) & ~(0xFB)
+        self.isPressed = int(buttonStatus) & ~(0xFB)
         # Shift isPressed to the zero bit
         self.isPressed = self.isPressed >> 2
         # Return isPressed as a bool
@@ -282,14 +284,18 @@ class QwiicButton(object):
             :rtype: int
         """
         # TODO: just so you know, this will return a list. You need to find out how to concatenate the two items into one time silly
-        return self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
-    
+        timeList = self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
+        time = int(timeList[0]) + int(timeList[1]) * 16 ** (2)
+        #print(timeList)
+        #print(time)
+        return time
+        
     # -------------------------------------------------------
     # setDebounceTime(time)
     #
     # Sets the time that the button waits for the mechanical 
     # contacts to settle in milliseconds.
-    def setDebouncetime(self, time):
+    def setDebounceTime(self, time):
         """
             Write two bytes into the BUTTON_DEBOUNCE_TIME register
 
@@ -299,9 +305,14 @@ class QwiicButton(object):
         # First check that time is not too big
         if time > 0xFFFF:
             time = 0xFFFF
+        time1 = time & ~(0xFF00)
+        time2 = time & ~(0x00FF)
+        time2 = time2 >> 8
+        timeList = [time1, time2]
         # Then write two bytes
         self._i2c.writeWord(self.address, self.BUTTON_DEBOUNCE_TIME, time)
-
+        #self._i2c.writeBlock(self.address, self.BUTTON_DEBOUNCE_TIME, timeList)
+        
     # -------------------------------------------------------
     # enablePressedInterrupt()
     #
@@ -484,7 +495,7 @@ class QwiicButton(object):
         # First, read the PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isEmpty
-        self.pressedIsEmpty = bin(pressedQueueStat) & ~(0xFD)
+        self.pressedIsEmpty = int(pressedQueueStat) & ~(0xFD)
         # Shift pressedIsEmpty to the zero bit
         self.pressedIsEmpty = self.pressedIsEmpty >> 1
         # Return pressedIsEmpty as a bool
@@ -505,8 +516,10 @@ class QwiicButton(object):
             :rtype: int
         """
         # TODO: not sure if this will work because this read might return a list?
-        return self._i2c.readBlock(self.address, self.PRESSED_QUEUE_FRONT, 4)
-
+        timeList = self._i2c.readBlock(self.address, self.PRESSED_QUEUE_FRONT, 4)
+        time = int(timeList[0]) + int(timeList[1]) * 16 ** (2) + int(timeList[2]) * 16 ** (4) + int(timeList[3]) * 16 ** (6) 
+        return time
+        
     # -------------------------------------------------------
     # timeSinceFirstPress()
     #
@@ -521,8 +534,10 @@ class QwiicButton(object):
             :return: PRESSED_QUEUE_BACK
             :rtype: int
         """
-        return self._i2c.readBlock(self.address, self.PRESSED_QUEUE_BACK, 4)
-
+        timeList = self._i2c.readBlock(self.address, self.PRESSED_QUEUE_BACK, 4)
+        time = int(timeList[0]) + int(timeList[1]) * 16 ** (2) + int(timeList[2]) * 16 ** (4) + int(timeList[3]) * 16 ** (6)
+        return time
+        
     # -------------------------------------------------------
     # popPressedQueue()
     #
@@ -581,7 +596,7 @@ class QwiicButton(object):
         # First, read the CLICKED_QUEUE_STATUS register
         clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
         # Convert to binary and clear all bits but clickedIsEmpty
-        self.clickedIsEmpty = bin(clickedQueueStat) & ~(0xFD)
+        self.clickedIsEmpty = int(clickedQueueStat) & ~(0xFD)
         # Shift clickedIsEmpty to the zero bit
         self.clickedIsEmpty = self.clickedIsEmpty >> 1
         # Return clickedIsEmpty as a bool
@@ -601,8 +616,10 @@ class QwiicButton(object):
             :return: CLICKED_QUEUE_FRONT
             :rtype: int
         """
-        return self._i2c.readBlock(self.address, self.CLICKED_QUEUE_FRONT, 4)
-
+        timeList = self._i2c.readBlock(self.address, self.CLICKED_QUEUE_FRONT, 4)
+        time = int(timeList[0]) + int(timeList[1]) * 16 ** (2) + int(timeList[2]) * 16 ** (4) + int(timeList[3]) * 16 ** (6)
+        return time
+        
     # ------------------------------------------------------------
     # timeSinceFirstClick()
     #
@@ -617,8 +634,10 @@ class QwiicButton(object):
             :return: CLICKED_QUEUE_BACK
             :rtype: int
         """
-        return self._i2c.readBlock(self.address, self.CLICKED_QUEUE_BACK, 4)
-
+        timeList = self._i2c.readBlock(self.address, self.CLICKED_QUEUE_BACK, 4)
+        time = int(timeList[0]) + int(timeList[1]) * 16 ** (2) + int(timeList[2]) * 16 ** (4) + int(timeList[3]) * 16 ** (6)
+        return time
+        
     # -------------------------------------------------------------
     # popClickedQueue()
     #
