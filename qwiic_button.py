@@ -206,15 +206,9 @@ class QwiicButton(object):
             return False
         
         # Write new address to the I2C address register of the Qwiic Button
-        success = self._i2c.writeByte(self.address, self.I2C_ADDRESS, newAddress)
+        self._i2c.writeByte(self.address, self.I2C_ADDRESS, newAddress)
 
-        # Check if the write was successful
-        if success == True:
-            self.address = newAddress
-            return True
-        
-        else:
-            return False
+        self.address = newAddress
     
     # ---------------------------------------------------
     # getI2Caddress()
@@ -242,8 +236,6 @@ class QwiicButton(object):
         """
         # Read the button status register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
-        # FOR TESTING
-        #print(buttonStatus)
         # Convert to binary and clear all bits but isPressed
         self.isPressed = int(buttonStatus) & ~(0xFB)
         # Shift isPressed to the zero bit
@@ -255,7 +247,7 @@ class QwiicButton(object):
     # hasBeenClicked()
     #
     # Returns 1 if the button/switch is clicked, and 0 otherwise
-    def hasBeenClicked(self):
+    def hasButtonBeenClicked(self):
         """
             Returns the value of the hasBeenClicked status bit of the BUTTON_STATUS register
 
@@ -265,7 +257,7 @@ class QwiicButton(object):
         # Read the button status register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
         # Convert to binary and clear all bits but hasBeenClicked
-        self.hasBeenClicked = bin(buttonStatus) & ~(0xFD)
+        self.hasBeenClicked = int(buttonStatus) & ~(0xFD)
         # Shift hasBeenClicked to the zero bit
         self.hasBeenClicked = self.hasBeenClicked >> 1
         # Return hasBeenClicked as a bool
@@ -286,8 +278,6 @@ class QwiicButton(object):
         # TODO: just so you know, this will return a list. You need to find out how to concatenate the two items into one time silly
         timeList = self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
         time = int(timeList[0]) + int(timeList[1]) * 16 ** (2)
-        #print(timeList)
-        #print(time)
         return time
         
     # -------------------------------------------------------
@@ -413,7 +403,7 @@ class QwiicButton(object):
         # First, read BUTTON_STATUS register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
         # Convert to binary and clear all bits but the eventAvailable bit
-        self.eventAvailable = bin(buttonStatus) & ~(0xFE)
+        self.eventAvailable = int(buttonStatus) & ~(0xFE)
         # Return eventAvailable bit as a bool
         return bool(self.eventAvailable)
     
@@ -433,10 +423,10 @@ class QwiicButton(object):
         # First, read BUTTON_STATUS register
         buttonStatus = self._i2c.readByte(self.address, self.BUTTON_STATUS)
         # Convert to binary and clear the last three bits
-        buttonStatus = bin(buttonStatus) & ~(0x7)
+        buttonStatus = int(buttonStatus) & ~(0x7)
         # Write to BUTTON_STATUS register
-        self._i2c.writeByte(self.address, BUTTON_STATUS, buttonStatus)
-    
+        self._i2c.writeByte(self.address, self.BUTTON_STATUS, buttonStatus)
+        
     # -------------------------------------------------------
     # resetInterruptConfig()
     #
@@ -476,7 +466,7 @@ class QwiicButton(object):
         # First, read the PRESSED_QUEUE_STATUS register
         pressedQueueStat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isFull
-        self.pressedIsFull = bin(pressedQueueStat) & ~(0xFE)
+        self.pressedIsFull = int(pressedQueueStat) & ~(0xFE)
         # Return pressedIsFull as a bool
         return bool(self.pressedIsFull)
     
@@ -577,7 +567,7 @@ class QwiicButton(object):
         # First, read the CLICKED_QUEUE_STATUS register
         clickedQueueStat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
         # Convert to binary and clear all bits but clickedIsFull
-        self.clickedIsFull = bin(clickedQueueStat) & ~(0xFE)
+        self.clickedIsFull = int(clickedQueueStat) & ~(0xFE)
         # Return clickedIsFull as a bool
         return bool(self.clickedIsFull)
     

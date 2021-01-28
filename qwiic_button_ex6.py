@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# qwiic_button_ex6.py
+# qwiic_button_ex5.py
 #
-# Simple Example for the Qwiic Button. Daisy chain together two Qwiic Buttons 
-# with different I2C addresses. To change the address of a Qwiic Button, please
-# visit example 5.
+# Simple Example for the Qwiic Button. Shows how to change the I2C address of
+# the Qwiic Button
 #------------------------------------------------------------------------
 #
 # Written by Priynka Makin @ SparkFun Electronics, January 2021
@@ -38,7 +37,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 # SOFTWARE.
 #==================================================================================
-# Example 6
+# Example 5
 
 from __future__ import print_function
 import qwiic_i2c
@@ -49,44 +48,44 @@ import sys
 def runExample():
 
     print("\nSparkFun Qwiic Button Example 6")
-    myButton1 = qwiic_button.QwiicButton()
-    myButton2 = qwiic_button.QwiicButton()
+    myButton = qwiic_button.QwiicButton()
 
-    if myButton1.isConnected() == False:
-        print("\nThe Qwiic Button 1 isn't connected to the system. Please check your connection", \
+    if myButton.begin() == False:
+        print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
-            return
-    if myButton2.isConnected() == False:
-        print("\nThe Qwiic Button 2 isn't connected to the system. Please check your connection", \
-            file=sys.stderr)
-            return
-    
-    myButton1.begin()
-    myButton2.begin()
-
-    while 1:
-
-        # Check if button 1 is pressed
-        if myButton1.isPressed() == True:
-            print("\nButton 1 is pressed!")
-
-            while myButton1.isPressed() == True:
-                wait(10)    # Wait for the user to stop pressing
-            print("\nButton 1 is not pressed.")
+        return
         
-        # Check if button2 is pressed
-        if myButton2.isPressed() == True:
-            print("\nButton 2 is pressed!")
+    print("\nButton ready!")
 
-            while myButton2.isPressed() == True:
-                wait(10)    # Wait for the user to stop pressing
-            print("\nButton 2 is not pressed.")
-        
-        wait(20)    # Don't hammer too hard on the I2C bus
+    print("\nEnter a new I2C address for the Qwiic Button to use.")
+    print("\nDon't use the 0x prefix. For instance, if you wanted to")
+    print("\nchange the address to 0x5B, you would type 5B and hit enter.")
+
+    newAddress = raw_input("\nNew Address: ")
+    newAddress = int(newAddress, 16)
+
+    # Check if the user entered a valid address
+    if newAddress > 0x08 and newAddress < 0x77:
+        print("\nCharacters received and new address valid!")
+        print("\nAttempting to set Qwiic Button address...")
+
+        myButton.setI2Caddress(newAddress)
+        print("\nAddress successfully changed!")
+        # Check that the Qwiic Button acknowledges on the new address
+        time.sleep(0.02)
+        if myButton.begin() == False:
+            print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
+                file=sys.stderr)
+            
+        else:
+            print("\nButton acknowledged on new address!")
+            
+    else:
+        print("\nAddress entered not a valid I2C address")
 
 if __name__ == '__main__':
     try:
         runExample()
     except (KeyboardInterrupt, SystemExit) as exErr:
-        print("\nEnding Example 1")
+        print("\nEnding Example 6")
         sys.exit(0)

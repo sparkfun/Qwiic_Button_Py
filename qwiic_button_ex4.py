@@ -56,7 +56,7 @@ def runExample():
     print("\nButton ready!")
 
     while True:
-        
+            
         # If the queue of pressed events is not empty
         if myButton.isPressedQueueEmpty() == False:
             # Then print the time since the last and first button press
@@ -74,18 +74,6 @@ def runExample():
         # If the queue is empty
         else:
             print("\nButtonClicked Queue is empty!")
-        
-        # print("\n")
-
-        # val = input()
-        # # If the character is c or C, then pop a value off of the clicked queue
-        # if char(val) == 'c' or char(val) == 'C':
-            # myButton.popClickedQueue()
-            # print("\nPopped ClickedQueue!")
-        # # If the character is p or P, then pop a value off of the pressed queue
-        # if char(val) == 'p' or char(val) == 'P':
-            # myButton.popPressedQueue()
-            # print("\nPopped PressedQueue!")
 
         time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
 

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# qwiic_button_ex1.py
+# qwiic_button_ex7.py
 #
-# Simple Example for the Qwiic Button. Checks whether the button is pressed and
-# then prints its status.
+# Simple Example for the Qwiic Button. Daisy chain together two Qwiic Buttons 
+# with different I2C addresses. This example works for a Qwiic Button with the 
+# default address of 0x6F and one with an address changed to 0x5B. To change 
+# the address of a Qwiic Button, please visit example 6.
 #------------------------------------------------------------------------
 #
 # Written by Priynka Makin @ SparkFun Electronics, January 2021
@@ -37,37 +39,46 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
 # SOFTWARE.
 #==================================================================================
-# Example 1
+# Example 7
 
 from __future__ import print_function
-import qwiic_button 
+import qwiic_i2c
+import qwiic_button
 import time
 import sys
 
 def runExample():
 
-    print("\nSparkFun Qwiic Button Example 1")
-    myButton = qwiic_button.QwiicButton()
+    print("\nSparkFun Qwiic Button Example 7")
+    myButton1 = qwiic_button.QwiicButton()
+    myButton2 = qwiic_button.QwiicButton(0x5B)
 
-    if myButton.begin() == False:
-        print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
+    if myButton1.begin() == False:
+        print("\nThe Qwiic Button 1 isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
-    print("\nButton ready!")
+    if myButton2.begin() == False:
+        print("\nThe Qwiic Button 2 isn't connected to the system. Please check your connection", \
+            file=sys.stderr)
+        return
     
-    while True:   
-        
-        if myButton.isButtonPressed() == True:
-            print("\nThe button is pressed!")
+    print("\nButton's ready!")
 
-        else:    
-            print("\nThe button is not pressed!")
-            
-        time.sleep(0.02)
+    while 1:
+
+        # Check if button 1 is pressed
+        if myButton1.isButtonPressed() == True:
+            print("\nButton 1 is pressed!")
+        
+        # Check if button2 is pressed
+        if myButton2.isButtonPressed() == True:
+            print("\nButton 2 is pressed!")
+        
+        time.sleep(0.02)    # Don't hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
         runExample()
     except (KeyboardInterrupt, SystemExit) as exErr:
-        print("\nEnding Example 1")
+        print("\nEnding Example 7")
         sys.exit(0)
