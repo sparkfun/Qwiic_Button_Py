@@ -198,6 +198,8 @@ class QwiicButton(object):
         """
             Change the I2C address of the Qwiic Button
 
+            :param newAddress: the new I2C address to set the Qwiic Button to
+                The function itself checks if the entered parameter is a valid I2C address
             :return: True if the change was successful, false otherwise.
             :rtype: bool
         """
@@ -289,6 +291,9 @@ class QwiicButton(object):
         """
             Write two bytes into the BUTTON_DEBOUNCE_TIME register
 
+            :param time: the time in milliseconds to set debounce time to
+                The max debounce time is 0xFFFF milliseconds, but the function checks if
+                the entered parameter is valid
             :return: Nothing
             :rtype: void
         """
@@ -663,15 +668,22 @@ class QwiicButton(object):
             parameters to their respective registers: LED_BRIGHTNESS,
             LED_PULSE_CYCLE_TIME, LED_PULSE_OFF_TIME, LED_PULSE_GRANULARITY
 
+            :param brightness: between 0 (led off) and 255 (max brightness)
+            :param cycleTime: total pulse cycle in in milliseconds
+                Range 0 to 0xFFFF
+            :param offTime: off time between pulses in milliseconds
+                Range 0 to 0xFFFF
+            :param granularity: the amount of steps it takes to get to led brightness
+                If not provided, granularity defaults to 1
             :return: Nothing
             :rtype: Void
         """
         # Write brightness
         self._i2c.writeByte(self.address, self.LED_BRIGHTNESS, brightness)
         # Write cycleTime
-        self._i2c.writeByte(self.address, self.LED_PULSE_CYCLE_TIME, cycleTime)
+        self._i2c.writeWord(self.address, self.LED_PULSE_CYCLE_TIME, cycleTime)
         # Write offTime
-        self._i2c.writeByte(self.address, self.LED_PULSE_OFF_TIME, offTime)
+        self._i2c.writeWord(self.address, self.LED_PULSE_OFF_TIME, offTime)
         # Write granularity
         self._i2c.writeByte(self.address, self.LED_PULSE_GRANULARITY, granularity)
     
@@ -700,6 +712,7 @@ class QwiicButton(object):
         """
             Set LED on without pulse
 
+            :param brightness: between 0 (led off) and 255 (max brightness)
             :return: Nothing
             :rtype: Void
         """
