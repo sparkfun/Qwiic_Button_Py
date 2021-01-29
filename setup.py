@@ -102,6 +102,4 @@ setup(
     # simple. Or you can use find_packages().
     py_modules=["qwiic_ccs811"],
 
-    },
-
 )
