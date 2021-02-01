@@ -22,7 +22,7 @@ copyright = '2021, SparkFun Electronics'
 author = 'SparkFun Electronics'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.0.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,7 +34,7 @@ extensions = [
 	'sphinx.ext.autodoc',
 	'sphinx.ext.intersphinx',
 	'sphinx.ext.viewcode',
-	'm2r'
+	'm2r2'
 	]
 
 source_suffix = ['.rst', '.md']
