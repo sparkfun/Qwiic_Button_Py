@@ -5,7 +5,7 @@
 # Simple Example for the Qwiic Button. Shows how to use he FIFO Queue on the Qwiic Button.
 #------------------------------------------------------------------------
 #
-# Written by Priynka Makin @ SparkFun Electronics, January 2021
+# Written by Priyanka Makin @ SparkFun Electronics, January 2021
 # 
 # This python library supports the SparkFun Electroncis qwiic 
 # qwiic sensor/board ecosystem on a Raspberry Pi (and compatable) single

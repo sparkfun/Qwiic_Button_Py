@@ -6,7 +6,7 @@
 # and the LED pulses if it is.
 #------------------------------------------------------------------------
 #
-# Written by Priynka Makin @ SparkFun Electronics, January 2021
+# Written by Priyanka Makin @ SparkFun Electronics, January 2021
 # 
 # This python library supports the SparkFun Electroncis qwiic 
 # qwiic sensor/board ecosystem on a Raspberry Pi (and compatable) single
