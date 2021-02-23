@@ -43,12 +43,12 @@ import qwiic_button
 import time
 import sys
 
-def runExample():
+def run_example():
 
     print("\nSparkFun Qwiic Button Example 4")
-    myButton = qwiic_button.QwiicButton()
+    my_button = qwiic_button.Qwiic_Button()
 
-    if myButton.begin() == False:
+    if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
@@ -58,28 +58,28 @@ def runExample():
     while True:
             
         # If the queue of pressed events is not empty
-        if myButton.isPressedQueueEmpty() == False:
+        if my_button.is_pressed_queue_empty() == False:
             # Then print the time since the last and first button press
-            print("\n" + str(myButton.timeSinceLastPress() / 1000.0) + "s since he button was last pressed   ")
-            print(str(myButton.timeSinceFirstPress() / 1000.0) +"s since the button was first pressed ")
+            print("\n" + str(my_button.time_since_last_press() / 1000.0) + "s since he button was last pressed   ")
+            print(str(my_button.time_since_first_press() / 1000.0) +"s since the button was first pressed ")
         # If the queue is empty
         else: 
-            print("\nButtonPressed Queue is empty! ")
+            print("\nButton Pressed Queue is empty! ")
 
         # If the queue of clicked events is not empty
-        if myButton.isClickedQueueEmpty() == False:
+        if my_button.is_clicked_queue_empty() == False:
             # Then print the time since the last and first button click
-            print("\n" + str(myButton.timeSinceLastClick() / 1000.0) + "s since the button was last clicked  ")
-            print(str(myButton.timeSinceFirstClick() / 1000.0) + "s since the button was first clicked")
+            print("\n" + str(my_button.time_since_last_click() / 1000.0) + "s since the button was last clicked  ")
+            print(str(my_button.time_since_first_click() / 1000.0) + "s since the button was first clicked")
         # If the queue is empty
         else:
-            print("\nButtonClicked Queue is empty!")
+            print("\nButton Clicked Queue is empty!")
 
         time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
-        runExample()
+        run_example()
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Example 4")
         sys.exit(0)

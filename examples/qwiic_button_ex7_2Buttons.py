@@ -47,17 +47,17 @@ import qwiic_button
 import time
 import sys
 
-def runExample():
+def run_example():
 
     print("\nSparkFun Qwiic Button Example 7")
-    myButton1 = qwiic_button.QwiicButton()
-    myButton2 = qwiic_button.QwiicButton(0x5B)
+    my_button1 = qwiic_button.Qwiic_Button()
+    my_button2 = qwiic_button.Qwiic_Button(0x5B)
 
-    if myButton1.begin() == False:
+    if my_button1.begin() == False:
         print("\nThe Qwiic Button 1 isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
-    if myButton2.begin() == False:
+    if my_button2.begin() == False:
         print("\nThe Qwiic Button 2 isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
@@ -67,18 +67,18 @@ def runExample():
     while 1:
 
         # Check if button 1 is pressed
-        if myButton1.isButtonPressed() == True:
+        if my_button1.is_button_pressed() == True:
             print("\nButton 1 is pressed!")
         
         # Check if button2 is pressed
-        if myButton2.isButtonPressed() == True:
+        if my_button2.is_button_pressed() == True:
             print("\nButton 2 is pressed!")
         
         time.sleep(0.02)    # Don't hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
-        runExample()
+        run_example()
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Example 7")
         sys.exit(0)

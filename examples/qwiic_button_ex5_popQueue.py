@@ -43,12 +43,12 @@ import qwiic_button
 import time
 import sys
 
-def runExample():
+def run_example():
 
     print("\nSparkFun Qwiic Button Example 5")
-    myButton = qwiic_button.QwiicButton()
+    my_button = qwiic_button.Qwiic_Button()
 
-    if myButton.begin() == False:
+    if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
@@ -61,18 +61,18 @@ def runExample():
         val = raw_input("Type 'c' to pop a value from the clicked queue: ")
         # If the character is c or C, then pop a value off of the clicked queue
         if val == "c" or val == "C":
-            print("\nPopped ClickedQueue! The first value of clicked queue was: ")
-            print(str(myButton.popClickedQueue() / 1000.0))
+            print("\nPopped Clicked Queue! The first value of clicked queue was: ")
+            print(str(my_button.pop_clicked_queue() / 1000.0))
         # If the character is p or P, then pop a value off of the pressed queue
         if val == "p" or val == "P":
-            print("\nPopped PressedQueue!")
-            print(str(myButton.popClickedQueue() / 1000.0))
+            print("\nPopped Pressed Queue!")
+            print(str(my_button.pop_clicked_queue() / 1000.0))
 
         time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
-        runExample()
+        run_example()
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Example 5")
         sys.exit(0)

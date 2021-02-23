@@ -44,12 +44,12 @@ import qwiic_button
 import time
 import sys
 
-def runExample():
+def run_example():
 
     print("\nSparkFun Qwiic Button Example 1")
-    myButton = qwiic_button.QwiicButton()
+    my_button = qwiic_button.Qwiic_Button()
 
-    if myButton.begin() == False:
+    if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
@@ -57,7 +57,7 @@ def runExample():
     
     while True:   
         
-        if myButton.isButtonPressed() == True:
+        if my_button.is_button_pressed() == True:
             print("\nThe button is pressed!")
 
         else:    
@@ -67,7 +67,7 @@ def runExample():
 
 if __name__ == '__main__':
     try:
-        runExample()
+        run_example()
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Example 1")
         sys.exit(0)

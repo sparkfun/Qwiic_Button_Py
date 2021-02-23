@@ -45,12 +45,12 @@ import qwiic_button
 import time
 import sys
 
-def runExample():
+def run_example():
 
     print("\nSparkFun Qwiic Button Example 6")
-    myButton = qwiic_button.QwiicButton()
+    my_button = qwiic_button.Qwiic_Button()
 
-    if myButton.begin() == False:
+    if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
             file=sys.stderr)
         return
@@ -61,19 +61,19 @@ def runExample():
     print("\nDon't use the 0x prefix. For instance, if you wanted to")
     print("\nchange the address to 0x5B, you would type 5B and hit enter.")
 
-    newAddress = raw_input("\nNew Address: ")
-    newAddress = int(newAddress, 16)
+    new_address = raw_input("\nNew Address: ")
+    new_address = int(new_address, 16)
 
     # Check if the user entered a valid address
-    if newAddress > 0x08 and newAddress < 0x77:
+    if new_address > 0x08 and new_address < 0x77:
         print("\nCharacters received and new address valid!")
         print("\nAttempting to set Qwiic Button address...")
 
-        myButton.setI2Caddress(newAddress)
+        my_button.set_I2C_address(new_address)
         print("\nAddress successfully changed!")
         # Check that the Qwiic Button acknowledges on the new address
         time.sleep(0.02)
-        if myButton.begin() == False:
+        if my_button.begin() == False:
             print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
                 file=sys.stderr)
             
@@ -85,7 +85,7 @@ def runExample():
 
 if __name__ == '__main__':
     try:
-        runExample()
+        run_example()
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Example 6")
         sys.exit(0)
