@@ -4,4 +4,4 @@ API Reference
 .. automodule:: qwiic_button
    :members:
 
-.. autoclass:: QwiicButton
+.. autoclass:: Qwiic_Button
