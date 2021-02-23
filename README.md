@@ -24,6 +24,15 @@ Qwiic_Button_Py
 
 Python module for the [SparkFun Qwiic Button](https://www.sparkfun.com/products/15932)
 
+This module is also compatible with the following products:
+* [SparkFun Qwiic Button - Green LED](https://www.sparkfun.com/products/16842)
+* [SparkFun Qwiic Button Breakout](https://www.sparkfun.com/products/15931)
+* [Qwiic Arcade - Red](https://www.sparkfun.com/products/15591)
+* [Qwiic Arcade - Blue](https://www.sparkfun.com/products/15592)
+* [Qwiic Switch](https://www.sparkfun.com/products/15586)
+
+Please remember that SparkX products are experimental, therefore full functionality is not gauranteed.
+
 This python package is a port of the existing [SparkFun Qwiic Button Arduino Library](https://github.com/sparkfun/SparkFun_Qwiic_Button_Arduino_Library)
 
 This package can be used in conjunction with the overall [SparkFun qwiic Python Package](https://github.com/sparkfun/Qwiic_Py)
