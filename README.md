@@ -49,7 +49,7 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 
 Supported Platforms
 --------------------
-The qwiic Soil Moisture Sensor Python package current supports the following platforms:
+The Qwiic Button Python package current supports the following platforms:
 * [Raspberry Pi](https://www.sparkfun.com/search/results?term=raspberry+pi)
 * [NVidia Jetson Nano](https://www.sparkfun.com/products/15297)
 * [Google Coral Development Board](https://www.sparkfun.com/products/15318)
