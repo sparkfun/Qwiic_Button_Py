@@ -50,8 +50,8 @@ import sys
 def run_example():
 
     print("\nSparkFun Qwiic Button Example 7")
-    my_button1 = qwiic_button.Qwiic_Button()
-    my_button2 = qwiic_button.Qwiic_Button(0x5B)
+    my_button1 = qwiic_button.QwiicButton()
+    my_button2 = qwiic_button.QwiicButton(0x5B)
 
     if my_button1.begin() == False:
         print("\nThe Qwiic Button 1 isn't connected to the system. Please check your connection", \

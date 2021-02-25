@@ -69,9 +69,9 @@ _AVAILABLE_I2C_ADDRESS = [0x6F]
 # with this device is encapsulated by this class. The device class should be the only value
 # exported from this module.
 
-class Qwiic_Button(object):
+class QwiicButton(object):
     """"
-    Qwiic_Button
+    QwiicButton
         
         :param address: The I2C address to use for the device.
                         If not provided, the default address is used.

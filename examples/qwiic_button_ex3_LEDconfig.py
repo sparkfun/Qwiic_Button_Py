@@ -51,7 +51,7 @@ off_time = 200       # The total time to stay off between pulses. Set to 0 to be
 def run_example():
 
     print("\nSparkFun Qwiic Button Example 3")
-    my_button = qwiic_button.Qwiic_Button()
+    my_button = qwiic_button.QwiicButton()
 
     if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
