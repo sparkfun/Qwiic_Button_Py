@@ -473,7 +473,8 @@ class QwiicButton(object):
         # First, read the PRESSED_QUEUE_STATUS register
         pressed_queue_stat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         # Convert to binary and clear all bits but isFull
-        self.pressed_is_full = int(pressed_queue_stat) & ~(0xFE)
+        self.pressed_is_full = int(pressed_queue_stat) & ~(0xFB)
+        self.pressed_is_full = self.pressed_is_full >> 2
         # Return pressed_is_full as a bool
         return bool(self.pressed_is_full)
     
@@ -554,7 +555,7 @@ class QwiicButton(object):
         pressed_queue_stat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
         self.pressed_pop_request = 1
         # Set pop_request bit to 1
-        pressed_queue_stat = pressed_queue_stat | (self.pressed_pop_request << 2)
+        pressed_queue_stat = pressed_queue_stat | (self.pressed_pop_request)
         self._i2c.writeByte(self.address, self.PRESSED_QUEUE_STATUS, pressed_queue_stat)
         return temp_data
     
@@ -573,7 +574,8 @@ class QwiicButton(object):
         # First, read the CLICKED_QUEUE_STATUS register
         clicked_queue_stat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
         # Convert to binary and clear all bits but clicked_is_full
-        self.clicked_is_full = int(clicked_queue_stat) & ~(0xFE)
+        self.clicked_is_full = int(clicked_queue_stat) & ~(0xFB)
+        self.clicked_is_full = self.clicked_is_full >> 2
         # Return clicked_is_full as a bool
         return bool(self.clicked_is_full)
     
@@ -654,7 +656,7 @@ class QwiicButton(object):
         clicked_queue_stat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
         self.clicked_pop_request = 1
         # Set pop_request bit to 1
-        clicked_queue_stat = clicked_queue_stat | (self.clicked_pop_request << 2)
+        clicked_queue_stat = clicked_queue_stat | (self.clicked_pop_request)
         self._i2c.writeByte(self.address, self.CLICKED_QUEUE_STATUS, clicked_queue_stat)
         return temp_data
 
