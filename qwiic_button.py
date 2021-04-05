@@ -63,7 +63,11 @@ _DEFAULT_NAME = "Qwiic Button"
 # Some devices have  multiple available addresses - this is a list of these addresses.
 # NOTE: The first address in this list is considered the default I2C address for the 
 # device.
-_AVAILABLE_I2C_ADDRESS = [0x6F]
+_QWIIC_BUTTON_DEFAULT_ADDRESS = 0x6F
+_FULL_ADDRESS_LIST = list(range(0x08, 0x77+1))  # Full address list (excluding reserved addresses)
+_FULL_ADDRESS_LIST.remove(_QWIIC_BUTTON_DEFAULT_ADDRESS >> 1)   # Remove default address from list
+_AVAILABLE_I2C_ADDRESS = [_QWIIC_BUTTON_DEFAULT_ADDRESS]    # Initialize with default address
+_AVAILABLE_I2C_ADDRESS.extend(_FULL_ADDRESS_LIST) # Add full range of I2C addresses
 
 # Define the class that encapsulates the device being created. All information associated 
 # with this device is encapsulated by this class. The device class should be the only value
