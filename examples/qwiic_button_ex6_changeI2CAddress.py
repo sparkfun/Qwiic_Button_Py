@@ -43,10 +43,13 @@ import qwiic_button
 import time
 import sys
 
+# If you've already changed the I2C address, change this to the current address!
+currentAddress = qwiic_button._QWIIC_BUTTON_DEFAULT_ADDRESS
+
 def run_example():
 
     print("\nSparkFun Qwiic Button Example 6")
-    my_button = qwiic_button.QwiicButton()
+    my_button = qwiic_button.QwiicButton(currentAddress)
 
     if my_button.begin() == False:
         print("\nThe Qwiic Button isn't connected to the system. Please check your connection", \
@@ -58,14 +61,15 @@ def run_example():
     print("\nEnter a new I2C address for the Qwiic Button to use.")
     print("\nDon't use the 0x prefix. For instance, if you wanted to")
     print("\nchange the address to 0x5B, you would type 5B and hit enter.")
+    print("Any address from 0x08 to 0x77 works.")
 
     new_address = input("\nNew Address: ")
     new_address = int(new_address, 16)
 
     # Check if the user entered a valid address
-    if new_address > 0x08 and new_address < 0x77:
         print("\nCharacters received and new address valid!")
         print("\nAttempting to set Qwiic Button address...")
+    if new_address >= 0x08 and new_address <= 0x77:
 
         my_button.set_I2C_address(new_address)
         print("\nAddress successfully changed!")
