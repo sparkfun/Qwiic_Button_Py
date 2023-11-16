@@ -41,7 +41,6 @@
 #==================================================================================
 # Example 7
 
-from __future__ import print_function
 import qwiic_i2c
 import qwiic_button
 import time

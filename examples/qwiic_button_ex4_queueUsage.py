@@ -38,7 +38,6 @@
 #==================================================================================
 # Example 4
 
-from __future__ import print_function
 import qwiic_button
 import time
 import sys
