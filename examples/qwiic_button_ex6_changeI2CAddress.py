@@ -39,7 +39,6 @@
 #==================================================================================
 # Example 5
 
-import qwiic_i2c
 import qwiic_button
 import time
 import sys

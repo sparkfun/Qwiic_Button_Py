@@ -50,7 +50,6 @@ New to qwiic? Take a look at the entire [SparkFun Qwiic Ecosystem](https://www.s
 """
 #-----------------------------------------------------------------------------------
 
-import math
 import qwiic_i2c
 
 # Define the device name and I2C addresses. These are set in the class definition
