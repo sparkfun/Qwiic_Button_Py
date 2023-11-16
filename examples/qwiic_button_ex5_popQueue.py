@@ -57,7 +57,7 @@ def run_example():
     while True:
         
         print("\nType 'p' to pop a value from the pressed queue.")
-        val = raw_input("Type 'c' to pop a value from the clicked queue: ")
+        val = input("Type 'c' to pop a value from the clicked queue: ")
         # If the character is c or C, then pop a value off of the clicked queue
         if val == "c" or val == "C":
             print("\nPopped Clicked Queue! The first value of clicked queue was: ")

@@ -59,7 +59,7 @@ def run_example():
     print("\nDon't use the 0x prefix. For instance, if you wanted to")
     print("\nchange the address to 0x5B, you would type 5B and hit enter.")
 
-    new_address = raw_input("\nNew Address: ")
+    new_address = input("\nNew Address: ")
     new_address = int(new_address, 16)
 
     # Check if the user entered a valid address
