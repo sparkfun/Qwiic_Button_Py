@@ -66,13 +66,13 @@ def run_example():
 
         # Check if button 1 is pressed
         if my_button1.is_button_pressed() == True:
-            print("\nButton 1 is pressed!")
+            print("Button 1 is pressed!")
         
         # Check if button2 is pressed
         if my_button2.is_button_pressed() == True:
-            print("\nButton 2 is pressed!")
+            print("Button 2 is pressed!")
         
-        time.sleep(0.02)    # Don't hammer too hard on the I2C bus
+        time.sleep(0.1)    # Don't hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:

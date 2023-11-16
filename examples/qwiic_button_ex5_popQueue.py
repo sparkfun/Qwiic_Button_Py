@@ -56,18 +56,18 @@ def run_example():
 
     while True:
         
-        print("\nType 'p' to pop a value from the pressed queue.")
+        print("Type 'p' to pop a value from the pressed queue.")
         val = input("Type 'c' to pop a value from the clicked queue: ")
         # If the character is c or C, then pop a value off of the clicked queue
         if val == "c" or val == "C":
-            print("\nPopped Clicked Queue! The first value of clicked queue was: ")
+            print("Popped Clicked Queue! The first value of clicked queue was: ")
             print(str(my_button.pop_clicked_queue() / 1000.0))
         # If the character is p or P, then pop a value off of the pressed queue
         if val == "p" or val == "P":
-            print("\nPopped Pressed Queue!")
+            print("Popped Pressed Queue!")
             print(str(my_button.pop_clicked_queue() / 1000.0))
 
-        time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
+        time.sleep(0.1)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:

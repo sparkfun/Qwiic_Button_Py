@@ -65,14 +65,14 @@ def run_example():
         
         if my_button.is_button_pressed() == True:
 
-            print("\nThe button is pressed!")
+            print("The button is pressed!")
             my_button.LED_config(brightness, cycle_time, off_time)
         
         else:
-            print("\nThe button is not pressed.")
+            print("The button is not pressed.")
             my_button.LED_off()
         
-        time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
+        time.sleep(0.1)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:

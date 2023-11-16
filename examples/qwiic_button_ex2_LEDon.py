@@ -60,14 +60,14 @@ def run_example():
     while True:
 
         if my_button.is_button_pressed() == True:
-            print("\nThe button is pressed!")
+            print("The button is pressed!")
             my_button.LED_on(brightness)
         
         else:
-            print("\nThe button is not pressed.")
+            print("The button is not pressed.")
             my_button.LED_off()
         
-        time.sleep(0.02)
+        time.sleep(0.1)
     
 if __name__ == '__main__':
     try:

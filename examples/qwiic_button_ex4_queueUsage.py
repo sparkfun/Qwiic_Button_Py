@@ -59,22 +59,25 @@ def run_example():
         # If the queue of pressed events is not empty
         if my_button.is_pressed_queue_empty() == False:
             # Then print the time since the last and first button press
-            print("\n" + str(my_button.time_since_last_press() / 1000.0) + "s since he button was last pressed   ")
+            print(str(my_button.time_since_last_press() / 1000.0) + "s since he button was last pressed   ")
             print(str(my_button.time_since_first_press() / 1000.0) +"s since the button was first pressed ")
         # If the queue is empty
         else: 
-            print("\nButton Pressed Queue is empty! ")
+            print("Button Pressed Queue is empty! ")
 
         # If the queue of clicked events is not empty
         if my_button.is_clicked_queue_empty() == False:
             # Then print the time since the last and first button click
-            print("\n" + str(my_button.time_since_last_click() / 1000.0) + "s since the button was last clicked  ")
+            print(str(my_button.time_since_last_click() / 1000.0) + "s since the button was last clicked  ")
             print(str(my_button.time_since_first_click() / 1000.0) + "s since the button was first clicked")
         # If the queue is empty
         else:
-            print("\nButton Clicked Queue is empty!")
+            print("Button Clicked Queue is empty!")
 
-        time.sleep(0.02)    # Let's not hammer too hard on the I2C bus
+        # Add some visual separation
+        print()
+
+        time.sleep(0.1)    # Let's not hammer too hard on the I2C bus
 
 if __name__ == '__main__':
     try:
