@@ -36,7 +36,7 @@
 # SOFTWARE.
 #==================================================================================
 
-"""
+"""!
 qwiic_button
 ============
 Python module for the Qwiic Button.
@@ -46,7 +46,6 @@ This python package is a port of the exisiting [SparkFun Qwiic Button Arduino Li
 This package can be used in conjunction with the overall [SparkFun Qwiic Python Package](https://github.com/sparkfun/Qwiic_Py)
 
 New to qwiic? Take a look at the entire [SparkFun Qwiic Ecosystem](https://www.sparkfun.com/qwiic).
-
 """
 #-----------------------------------------------------------------------------------
 
@@ -73,15 +72,16 @@ _AVAILABLE_I2C_ADDRESS.extend(_FULL_ADDRESS_LIST) # Add full range of I2C addres
 # exported from this module.
 
 class QwiicButton(object):
-    """"
+    """!
+    "
     QwiicButton
-        
-        :param address: The I2C address to use for the device.
+
+    @param address: The I2C address to use for the device.
                         If not provided, the default address is used.
-        :param i2c_driver: An existing i2c driver object. If not provided
+    @param i2c_driver: An existing i2c driver object. If not provided
                         a driver object is created.
-        :return: The GPIO device object.
-        :rtype: Object
+
+    @return **Object** The GPIO device object.
     """
     # Constructor
     device_name = _DEFAULT_NAME
@@ -151,11 +151,10 @@ class QwiicButton(object):
     #
     # Is an actual board connected to our system?
     def is_connected(self):
-        """
-            Determine if a Qwiic Button device is connected to the system.
+        """!
+        Determine if a Qwiic Button device is connected to the system.
 
-            :return: True if the device is connected, otherwise False.
-            :rtype: bool
+        @return **bool** True if the device is connected, otherwise False.
         """
         return self._i2c.isDeviceConnected(self.address)
     
@@ -164,12 +163,11 @@ class QwiicButton(object):
     #
     # Initialize the system/validate the board.
     def begin(self):
-        """
-            Initialize the operation of the Qwiic Button
+        """!
+        Initialize the operation of the Qwiic Button
             Run is_connected() and check the ID in the ID register
 
-            :return: Returns true if the intialization was successful, otherwise False.
-            :rtype: bool
+        @return **bool** Returns true if the intialization was successful, otherwise False.
         """
         if self.is_connected() == True:
             id = self._i2c.readByte(self.address, self.ID)
@@ -186,11 +184,10 @@ class QwiicButton(object):
     # The leftmost (high) byte is the major revision number, 
     # and the rightmost (low) byte is the minor revision number.
     def get_firmware_version(self):
-        """
-            Read the register and get the major and minor firmware version number.
+        """!
+        Read the register and get the major and minor firmware version number.
 
-            :return: 16 bytes version number
-            :rtype: int
+        @return **int** 16 bytes version number
         """
         version = self._i2c.readByte(self.address, self.FIRMWARE_MAJOR) << 8
         version |= self._i2c.readByte(self.address, self.FIRMWARE_MINOR)
@@ -201,13 +198,13 @@ class QwiicButton(object):
     #
     # Configures the attached device to attach to the I2C bus using the specified address
     def set_I2C_address(self, new_address):
-        """
-            Change the I2C address of the Qwiic Button
+        """!
+        Change the I2C address of the Qwiic Button
 
-            :param new_address: the new I2C address to set the Qwiic Button to
+        @param new_address: the new I2C address to set the Qwiic Button to
                 The function itself checks if the entered parameter is a valid I2C address
-            :return: True if the change was successful, false otherwise.
-            :rtype: bool
+
+        @return **bool** True if the change was successful, false otherwise.
         """
         # First, check if the specified address is valid
         if new_address < 0x08 or new_address > 0x77:
@@ -223,11 +220,10 @@ class QwiicButton(object):
     #
     # Returns the I2C address of the device
     def get_I2C_address(self):
-        """
-            Returns the current I2C address of the Qwiic Button
+        """!
+        Returns the current I2C address of the Qwiic Button
 
-            :return: current I2C address
-            :rtype: int
+        @return **int** current I2C address
         """
         return self.address
 
@@ -236,11 +232,10 @@ class QwiicButton(object):
     #
     # Returns 1 if the button/switch is pressed, 0 otherwise
     def is_button_pressed(self):
-        """
-            Returns the value of the is_pressed status bit of the BUTTON_STATUS register
+        """!
+        Returns the value of the is_pressed status bit of the BUTTON_STATUS register
 
-            :return: is_pressed bit
-            :rtype: bool
+        @return **bool** is_pressed bit
         """
         # Read the button status register
         button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
@@ -256,11 +251,10 @@ class QwiicButton(object):
     #
     # Returns 1 if the button/switch is clicked, and 0 otherwise
     def has_button_been_clicked(self):
-        """
-            Returns the value of the has_been_clicked status bit of the BUTTON_STATUS register
+        """!
+        Returns the value of the has_been_clicked status bit of the BUTTON_STATUS register
 
-            :return: has_been_clicked bit
-            :rtype: bool
+        @return **bool** has_been_clicked bit
         """
         # Read the button status register
         button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
@@ -277,11 +271,10 @@ class QwiicButton(object):
     # Returns the time that the button waits for the mechanical
     # contacts to settle in milliseconds.
     def get_debounce_time(self):
-        """
-            Returns the value in the BUTTON_DEBOUNCE_TIME register
+        """!
+        Returns the value in the BUTTON_DEBOUNCE_TIME register
 
-            :return: debounce time in milliseconds
-            :rtype: int
+        @return **int** debounce time in milliseconds
         """
         time_list = self._i2c.readBlock(self.address, self.BUTTON_DEBOUNCE_TIME, 2)
         time = int(time_list[0]) + int(time_list[1]) * 16 ** (2)
@@ -293,14 +286,14 @@ class QwiicButton(object):
     # Sets the time that the button waits for the mechanical 
     # contacts to settle in milliseconds.
     def set_debounce_time(self, time):
-        """
-            Write two bytes into the BUTTON_DEBOUNCE_TIME register
+        """!
+        Write two bytes into the BUTTON_DEBOUNCE_TIME register
 
-            :param time: the time in milliseconds to set debounce time to
+        @param time: the time in milliseconds to set debounce time to
                 The max debounce time is 0xFFFF milliseconds, but the function checks if
                 the entered parameter is valid
-            :return: Nothing
-            :rtype: void
+
+        @return **void** Nothing
         """
         # First check that time is not too big
         if time > 0xFFFF:
@@ -319,11 +312,10 @@ class QwiicButton(object):
     # is pressed. If enableClickedInterrupt() has also been called,
     # then the interrupt will trigger on either a push or a click.
     def enable_pressed_interrupt(self):
-        """
-            Set pressed_enable bit of the INTERRUPT_CONFIG register to a 1
+        """!
+        Set pressed_enable bit of the INTERRUPT_CONFIG register to a 1
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         # First, read the INTERRUPT_CONFIG register
         interrupt_config = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
@@ -340,11 +332,10 @@ class QwiicButton(object):
     # button is pressed. If enable_clicked_interrupt() has also been called, 
     # then the interrupt will still trigger on the button click.
     def disable_pressed_interrupt(self):
-        """
-            Clear the pressed_enable bit of the INTERRUPT_CONFIG register
+        """!
+        Clear the pressed_enable bit of the INTERRUPT_CONFIG register
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         # First, read the INTERRUPT_CONFIG register
         interrupt_config = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
@@ -361,11 +352,10 @@ class QwiicButton(object):
     # is clicked. If enable_pressed_interrupt() has also been called, 
     # then the interrupt will trigger on either a push or a click.
     def enable_clicked_interrupt(self):
-        """
-            Set the clicked_enable bit of the INTERRUPT_CONFIG register
+        """!
+        Set the clicked_enable bit of the INTERRUPT_CONFIG register
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         # First, read the INTERRUPT_CONFIG register
         interrupt_config = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
@@ -383,11 +373,10 @@ class QwiicButton(object):
     # been called, then the interrupt will still trigger on the 
     # button press.
     def disable_clicked_interrupt(self):
-        """
-            Clear the clicked_enable bit of the INTERRUPT_CONFIG register
+        """!
+        Clear the clicked_enable bit of the INTERRUPT_CONFIG register
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         # First, read the INTERRUPT_CONFIG register
         interrupt_config = self._i2c.readByte(self.address, self.INTERRUPT_CONFIG)
@@ -403,10 +392,10 @@ class QwiicButton(object):
     # Returns the eventAvailble bit. This bit is set to 1 if a
     # button click or press event occurred.
     def available(self):
-        """
-            Return the event_available bit of the BUTTON_STATUS register
-            
-            :return: event_available bit
+        """!
+        Return the event_available bit of the BUTTON_STATUS register
+
+        @return event_available bit
             :rtye: bool
         """
         # First, read BUTTON_STATUS register
@@ -422,12 +411,11 @@ class QwiicButton(object):
     # Sets all button status bits (is_pressed, has_been_clicked, 
     # and event_available) to zero.
     def clear_event_bits(self):
-        """
-            Clear the is_pressed, has_been_clicked, and event_available
+        """!
+        Clear the is_pressed, has_been_clicked, and event_available
             bits of the BUTTON_STATUS register
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         # First, read BUTTON_STATUS register
         button_status = self._i2c.readByte(self.address, self.BUTTON_STATUS)
@@ -441,12 +429,11 @@ class QwiicButton(object):
     #
     # Resets the interrupt configuration back to defaults.
     def reset_interrupt_config(self):
-        """
-            Enable pressed and clicked interrupts and clear the
+        """!
+        Enable pressed and clicked interrupts and clear the
             event_available bit of BUTTON_STATUS register
 
-            :return: Nothing
-            :rtype: Void
+        @return **Void** Nothing
         """
         self.pressed_enable = 1
         self.clicked_enable = 1
@@ -466,11 +453,10 @@ class QwiicButton(object):
     # Returns true if queue of button press time stamps is full,
     # and false otherwise.
     def is_pressed_queue_full(self):
-        """
-            Returns the is_full bit of the PRESSED_QUEUE_STATUS register
+        """!
+        Returns the is_full bit of the PRESSED_QUEUE_STATUS register
 
-            :return: pressed_is_full
-            :rtype: bool
+        @return **bool** pressed_is_full
         """
         # First, read the PRESSED_QUEUE_STATUS register
         pressed_queue_stat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
@@ -486,11 +472,10 @@ class QwiicButton(object):
     # Returns true if the queue of button press time stamps is
     # empty, and false otherwise.
     def is_pressed_queue_empty(self):
-        """
-            Returns the is_empty bit of the PRESSED_QUEUE_STATUS register
-            
-            :return: pressed_is_empty
-            :rtype: bool
+        """!
+        Returns the is_empty bit of the PRESSED_QUEUE_STATUS register
+
+        @return **bool** pressed_is_empty
         """
         # First, read the PRESSED_QUEUE_STATUS register
         pressed_queue_stat = self._i2c.readByte(self.address, self.PRESSED_QUEUE_STATUS)
@@ -508,12 +493,11 @@ class QwiicButton(object):
     # button press. Since this returns a 32-bit int, it will 
     # roll over about every 50 days.
     def time_since_last_press(self):
-        """
-            Returns the four bytes of PRESSED_QUEUE_FRONT.
+        """!
+        Returns the four bytes of PRESSED_QUEUE_FRONT.
             Time in milliseconds.
 
-            :return: PRESSED_QUEUE_FRONT
-            :rtype: int
+        @return **int** PRESSED_QUEUE_FRONT
         """
         time_list = self._i2c.readBlock(self.address, self.PRESSED_QUEUE_FRONT, 4)
         time = int(time_list[0]) + int(time_list[1]) * 16 ** (2) + int(time_list[2]) * 16 ** (4) + int(time_list[3]) * 16 ** (6) 
@@ -526,12 +510,11 @@ class QwiicButton(object):
     # button press. Since this returns a 32-bit int, it will 
     # roll over about every 50 days.
     def time_since_first_press(self):
-        """
-            Returns the four bytes of PRESSED_QUEUE_BACK.
+        """!
+        Returns the four bytes of PRESSED_QUEUE_BACK.
             Time in milliseconds
 
-            :return: PRESSED_QUEUE_BACK
-            :rtype: int
+        @return **int** PRESSED_QUEUE_BACK
         """
         time_list = self._i2c.readBlock(self.address, self.PRESSED_QUEUE_BACK, 4)
         time = int(time_list[0]) + int(time_list[1]) * 16 ** (2) + int(time_list[2]) * 16 ** (4) + int(time_list[3]) * 16 ** (6)
@@ -543,13 +526,12 @@ class QwiicButton(object):
     # Returns the oldest value in the queue (milliseconds since 
     # first button press), and then removes it.
     def pop_pressed_queue(self):
-        """
-            Returns contents of PRESSED_QUEUE_BACK register and 
+        """!
+        Returns contents of PRESSED_QUEUE_BACK register and 
             writes a 1 to popRequest bit of PRESSED_QUEUE_STATUS
             register.
 
-            :return: PRESSED_QUEUE_BACK
-            :rtype: int
+        @return **int** PRESSED_QUEUE_BACK
         """
         # Get the time in milliseconds since the button was first pressed
         temp_data = self.time_since_first_press()
@@ -567,11 +549,10 @@ class QwiicButton(object):
     # Returns true if the queue of button click timestamps is full
     # and false otherwise.
     def is_clicked_queue_full(self):
-        """
-            Reads the is_full bit of the CLICKED_QUEUE_STATUS register
+        """!
+        Reads the is_full bit of the CLICKED_QUEUE_STATUS register
 
-            :return: clicked_is_full
-            :rtype: bool
+        @return **bool** clicked_is_full
         """
         # First, read the CLICKED_QUEUE_STATUS register
         clicked_queue_stat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
@@ -587,11 +568,10 @@ class QwiicButton(object):
     # Returns true if the queue click timestamps is empty and false
     # otherwise.
     def is_clicked_queue_empty(self):
-        """
-            Reads the is_empty bit of the CLICKED_QUEUE_STATUS register
+        """!
+        Reads the is_empty bit of the CLICKED_QUEUE_STATUS register
 
-            :return: clicked_is_empty
-            :rtype: bool
+        @return **bool** clicked_is_empty
         """
         # First, read the CLICKED_QUEUE_STATUS register
         clicked_queue_stat = self._i2c.readByte(self.address, self.CLICKED_QUEUE_STATUS)
@@ -609,12 +589,11 @@ class QwiicButton(object):
     # click. Since this returns a 32-bit int, it will roll over about
     # every 50 days
     def time_since_last_click(self):
-        """
-            Returns the four bytes of CLICKED_QUEUE_FRONT register.
+        """!
+        Returns the four bytes of CLICKED_QUEUE_FRONT register.
             Time in milliseconds
 
-            :return: CLICKED_QUEUE_FRONT
-            :rtype: int
+        @return **int** CLICKED_QUEUE_FRONT
         """
         time_list = self._i2c.readBlock(self.address, self.CLICKED_QUEUE_FRONT, 4)
         time = int(time_list[0]) + int(time_list[1]) * 16 ** (2) + int(time_list[2]) * 16 ** (4) + int(time_list[3]) * 16 ** (6)
@@ -627,12 +606,11 @@ class QwiicButton(object):
     # click. Since this returns a 32-bit int, it will roll over about 
     # every 50 days
     def time_since_first_click(self):
-        """
-            Returns the four bytes of CLICKED_QUEUE_BACK register.
+        """!
+        Returns the four bytes of CLICKED_QUEUE_BACK register.
             Time in milliseconds
 
-            :return: CLICKED_QUEUE_BACK
-            :rtype: int
+        @return **int** CLICKED_QUEUE_BACK
         """
         time_list = self._i2c.readBlock(self.address, self.CLICKED_QUEUE_BACK, 4)
         time = int(time_list[0]) + int(time_list[1]) * 16 ** (2) + int(time_list[2]) * 16 ** (4) + int(time_list[3]) * 16 ** (6)
@@ -644,13 +622,12 @@ class QwiicButton(object):
     # Returns the oldest value in the queue (milliseconds since first
     # button click), and then removes it.
     def pop_clicked_queue(self):
-        """
-            Returns contents of CLICKED_QUEUE_BACK register and 
+        """!
+        Returns contents of CLICKED_QUEUE_BACK register and 
             writes a 1 to popRequest bit of CLICKED_QUEUE_STATUS
             register.
 
-            :return: CLICKED_QUEUE_BACK
-            :rtype: int
+        @return **int** CLICKED_QUEUE_BACK
         """
         # Get the time in milliseconds since the button was first clicked
         temp_data = self.time_since_first_click()
@@ -668,20 +645,20 @@ class QwiicButton(object):
     # Configures the LED with the given max brightness, granularity
     # (1 is fine for most applications), cycle time, and off time.
     def LED_config(self, brightness, cycle_time, off_time, granularity = 1):
-        """
-            Write brightness, cycle_time, off_time, and granularity
+        """!
+        Write brightness, cycle_time, off_time, and granularity
             parameters to their respective registers: LED_BRIGHTNESS,
             LED_PULSE_CYCLE_TIME, LED_PULSE_OFF_TIME, LED_PULSE_GRANULARITY
 
-            :param brightness: between 0 (led off) and 255 (max brightness)
-            :param cycle_time: total pulse cycle in in milliseconds
+        @param brightness: between 0 (led off) and 255 (max brightness)
+        @param cycle_time: total pulse cycle in in milliseconds
                 Range 0 to 0xFFFF
-            :param off_time: off time between pulses in milliseconds
+        @param off_time: off time between pulses in milliseconds
                 Range 0 to 0xFFFF
-            :param granularity: the amount of steps it takes to get to led brightness
+        @param granularity: the amount of steps it takes to get to led brightness
                 If not provided, granularity defaults to 1
-            :return: Nothing
-            :rtype: Void
+
+        @return **Void** Nothing
         """
         # Write brightness
         self._i2c.writeByte(self.address, self.LED_BRIGHTNESS, brightness)
@@ -697,13 +674,12 @@ class QwiicButton(object):
     #
     # Turn the onboard LED off
     def LED_off(self):
-        """
-            Write zero's to all the LED registers: LED_BRIGHTNESS,
+        """!
+        Write zero's to all the LED registers: LED_BRIGHTNESS,
             LED_PULSE_CYCLE_TIME, LED_PULSE_OFF_TIME, and LED_PULSE_GRANULARITY
             defaults to zero.
 
-            :return: Nothing
-            :rtype: void
+        @return **void** Nothing
         """
         self.LED_config(0, 0, 0)
     
@@ -714,11 +690,11 @@ class QwiicButton(object):
     # to an integer between 0 and 255, where 0 is off and 255 is max
     # brightness.
     def LED_on(self, brightness):
-        """
-            Set LED on without pulse
+        """!
+        Set LED on without pulse
 
-            :param brightness: between 0 (led off) and 255 (max brightness)
-            :return: Nothing
-            :rtype: Void
+        @param brightness: between 0 (led off) and 255 (max brightness)
+
+        @return **Void** Nothing
         """
         self.LED_config(brightness, 0, 0)
