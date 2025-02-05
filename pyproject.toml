@@ -4,7 +4,7 @@ requires = ["setuptools"]
 [project]
 name = "sparkfun_qwiic_button"
 version = "2.0.2"
-description = "This package allows the user to: determine whether or not the button/switch is pressed or has been clicked \
+description = "Sparkfun Electronics Qwiic Button Package"
 readme = "DESCRIPTION.rst"
 
 authors = [{name="Sparkfun Electronics", email="info@sparkfun.com"}]
