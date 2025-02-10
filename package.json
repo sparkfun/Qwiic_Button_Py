@@ -1,9 +1,12 @@
 {
     "urls": [
-      ["qwiic_button.py", "github:sparkfun/Qwiic_Button_Py/qwiic_button.py"]
-    ],
-    "deps": [
-      ["github:sparkfun/Qwiic_I2C_Py", "master"]
+      ["qwiic_button_py_examples/qwiic_button_ex1_buttonPress.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex1_buttonPress.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex2_LEDon.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex2_LEDon.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex3_LEDconfig.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex3_LEDconfig.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex4_queueUsage.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex4_queueUsage.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex5_popQueue.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex5_popQueue.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex6_changeI2CAddress.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex6_changeI2CAddress.py"],
+      ["qwiic_button_py_examples/qwiic_button_ex7_2Buttons.py", "github:sparkfun/qwiic_button_py/examples/qwiic_button_ex7_2Buttons.py"]
     ],
     "version": "2.0.2"
 }
